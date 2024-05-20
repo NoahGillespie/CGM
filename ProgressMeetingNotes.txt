@@ -1,5 +1,12 @@
 Thurs 05/16/25:
-Notes:
+Here's what we decided tomorrow Friday 5/17:
+Work synchronously / asynchonously throughout the day to visualize the data, identify what needs to be cleaned, clean the data as needed. We'll aim to do this on Colab (until we figure out how to get everyone on board with github) and have a Zoom link that'll just remain open throughout the day. I'll log on around 9:30 ET.
+Meet (synchronously) at 6pm ET to look at the cleaned data and pin down our overall question.
+To avoid peaking at the test data, we'll leave out the last couple of days' data for each subject. We'll also leave out the last 3 subjects as test subjects. Again just a precaution for now, since we don't know what our question will be yet.
+@Adria let us know if this works for you
+
+Friday 05/17/25:
+AM Meeting Notes:
 Noah will put some #interesting results! in the GoodResults.ipynb notebook
 Goals for today:
 We want to plot glucose level with food intake chart for multiple days and multiple subjects
@@ -14,25 +21,15 @@ Long term ideas:
 Webapp idea: lay out the day of foods, algorithm would say:. here's data about the foods im about the eat, here's where the peak will show up. e.g., delay, amplitude, width.
 
 
-Friday 05/17/25:
+PM Meeting Notes:
 Next steps (timeframe TBD - but ideally early next week or before our meeting w Gleb):
 Create a preprocessing notebook that makes all timestamps uniform for all subjects and data types. Maybe smooth some data, such as the temperature data, since it has random valleys that don't make sense. 
-@scpark
- was going to spearhead this. 
-@Oladimeji
- and I can also jump on!
+@scpark was going to spearhead this. 
+@Oladimeji and I can also jump on!
 Create a notebook that takes in inputs of subject #, and data type & plots it. Use this to visualize all training data. This will be our first push to Github. 
-@Noah Gillespie
- started this in GoodResults notebook. I believe 
-@scpark
- was going to continue making it more user friendly, possibly in a new notebook so as to not step onto the toes of 
-@Noah Gillespie
- as we learn to collaborate in Colab.
+@Noah Gillespie started this in GoodResults notebook. I believe @scpark was going to continue making it more user friendly, possibly in a new notebook so as to not step onto the toes of 
+@Noah Gillespie as we learn to collaborate in Colab.
 Slice, visualize, & start modeling the glucose 'spikes'. Include a little bit of time, say, 30 minutes, to get the baseline glucose level prior to eating. This will help us identify the amplitude of the glucose spike. 
-@Noah Gillespie
- started working on this in GoodResults.
+@Noah Gillespie started working on this in GoodResults.
 Familiarize ourselves with Github collaboration instructions: https://medium.com/@jonathanmines/the-ultimate-github-collaboration-guide-df816e98fb67
-@Adria
- and 
-@Daniel Visscher
- Let us know if you want to hop into any of these!
+@Adria and @Daniel Visscher Let us know if you want to hop into any of these!
