@@ -1,0 +1,38 @@
+Thurs 05/16/25:
+Notes:
+Noah will put some #interesting results! in the GoodResults.ipynb notebook
+Goals for today:
+We want to plot glucose level with food intake chart for multiple days and multiple subjects
+In addition to leaving out our last 2 subjects, for each subject that's in our training set let's also leave out 2 random full days of data starting at midnight. Note: Looks like everyone got milkshakes the morning on the last day before ending the data collection
+Look at exploratory data files from previous groups and populate summary statistics from our dataset. e.g., Glucose level, stdv of glucose level, how many days we have per subject, identifying which days include a standard breakfast. This may be helpful to have before we meet with Gleb.
+Familiarize ourselves with Github collaboration instructions: https://medium.com/@jonathanmines/the-ultimate-github-collaboration-guide-df816e98fb67
+Create a preprocessing notebook that makes all timestamps uniform for all subjects and data types. Maybe smooth some data such as temperature data?
+Create a clean notebook that takes in inputs of subject #, and data type & plots it. Use this to visualize all training data. This will be our first push to Github.
+Next steps:
+Model the glucose 'spikes'. To do this, look at the sliced data Visualize what is the shape of the peak? Is it consistent? Include a little bit of time, say, 30 minutes, to get the baseline glucose level prior to eating. This will help us identify the amplitude of the glucose spike
+Long term ideas:
+Webapp idea: lay out the day of foods, algorithm would say:. here's data about the foods im about the eat, here's where the peak will show up. e.g., delay, amplitude, width.
+
+
+Friday 05/17/25:
+Next steps (timeframe TBD - but ideally early next week or before our meeting w Gleb):
+Create a preprocessing notebook that makes all timestamps uniform for all subjects and data types. Maybe smooth some data, such as the temperature data, since it has random valleys that don't make sense. 
+@scpark
+ was going to spearhead this. 
+@Oladimeji
+ and I can also jump on!
+Create a notebook that takes in inputs of subject #, and data type & plots it. Use this to visualize all training data. This will be our first push to Github. 
+@Noah Gillespie
+ started this in GoodResults notebook. I believe 
+@scpark
+ was going to continue making it more user friendly, possibly in a new notebook so as to not step onto the toes of 
+@Noah Gillespie
+ as we learn to collaborate in Colab.
+Slice, visualize, & start modeling the glucose 'spikes'. Include a little bit of time, say, 30 minutes, to get the baseline glucose level prior to eating. This will help us identify the amplitude of the glucose spike. 
+@Noah Gillespie
+ started working on this in GoodResults.
+Familiarize ourselves with Github collaboration instructions: https://medium.com/@jonathanmines/the-ultimate-github-collaboration-guide-df816e98fb67
+@Adria
+ and 
+@Daniel Visscher
+ Let us know if you want to hop into any of these!
