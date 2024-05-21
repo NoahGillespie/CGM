@@ -1,16 +1,20 @@
 Tuesday 05/21/24:
+Progress from last time:
+1. GoodResults.ipynb: Plotted individual subject curves from start of standard meal. See lots of variation between subjects. Maybe if we account for different initial slopes that would help standardize?
+2. GoodResults.ipynb: Verified that all participants data load properly.
+3. ACC_highpass.ipynb: Plotted filtered accelerometer data to remove influence of gravity. Visualized the dips in readings that correspond to turning over at night.
 Gleb meeting agenda:
 1. Describe the dataset
-1. What is the scope of a doable project?
-2. Does our approach to model variation in glucose makes sense? Do you have any resources for this type of modeling?
-3. Go over possible applications for this.
+2. What is the scope of a doable project?
+3. Does our approach to model variation in glucose makes sense? Do you have any resources for this type of modeling?
+4. Go over possible applications for this.
 Possible applications:
-3. Can we more accurately measure glucose overnight by ignoring dips caused by sleeping on top of the sensor?
-4. Why do some curves go down initially? Possibly due to exercise. How can we account for initial slope?
+1. Can we more accurately measure glucose overnight by ignoring dips caused by sleeping on top of the sensor?
+2. Why do some curves go down initially? Possibly due to exercise. How can we account for initial slope?
 Next steps:
 1. Identify the maximum after a meal, predict the width or another statistic of the plot, try to recreate the plot -> slope could go in there
 or slope could be used to predict the maximum. 
-
+2. Grab mean values (or another statistic) from windowed accelerometer data to use as inputs to our model.
 
 Thurs 05/16/25:
 Here's what we decided tomorrow Friday 5/17:
