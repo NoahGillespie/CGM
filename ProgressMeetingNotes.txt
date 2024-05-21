@@ -1,3 +1,17 @@
+Tuesday 05/21/24:
+Gleb meeting agenda:
+1. Describe the dataset
+1. What is the scope of a doable project?
+2. Does our approach to model variation in glucose makes sense? Do you have any resources for this type of modeling?
+3. Go over possible applications for this.
+Possible applications:
+3. Can we more accurately measure glucose overnight by ignoring dips caused by sleeping on top of the sensor?
+4. Why do some curves go down initially? Possibly due to exercise. How can we account for initial slope?
+Next steps:
+1. Identify the maximum after a meal, predict the width or another statistic of the plot, try to recreate the plot -> slope could go in there
+or slope could be used to predict the maximum. 
+
+
 Thurs 05/16/25:
 Here's what we decided tomorrow Friday 5/17:
 Work synchronously / asynchonously throughout the day to visualize the data, identify what needs to be cleaned, clean the data as needed. We'll aim to do this on Colab (until we figure out how to get everyone on board with github) and have a Zoom link that'll just remain open throughout the day. I'll log on around 9:30 ET.
@@ -20,7 +34,7 @@ Model the glucose 'spikes'. To do this, look at the sliced data Visualize what i
 Long term ideas:
 Webapp idea: lay out the day of foods, algorithm would say:. here's data about the foods im about the eat, here's where the peak will show up. e.g., delay, amplitude, width.
 
-
+Friday 05/17/25:
 PM Meeting Notes:
 Next steps (timeframe TBD - but ideally early next week or before our meeting w Gleb):
 Create a preprocessing notebook that makes all timestamps uniform for all subjects and data types. Maybe smooth some data, such as the temperature data, since it has random valleys that don't make sense. 
