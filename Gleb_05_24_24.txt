@@ -1,0 +1,63 @@
+github
+
+coherent story
+
+identify a problem clearly.
+clear solution
+problem statement in a way that anyone could understand - glucose is related to diabetes?
+
+with ML, need to show that you're making a tangible progress - don't show best model immediately
+this shows that your pipeline is fine, not getting caught up in missing values. also gives you a baseline to work with
+
+ex. LR model that says what will be glucose level in 3hr on avg given this input. you can train the model - 50% error. 
+then give sequence of model, look at what improved the model, better metrics, improved upon it
+
+check groundwater model - iterating models. worked on arima and all classic models
+very simple baseline model
+this gives you off-ramps so if at any moment you had to stop, you had something you can deliver. so you dont have nothing
+this means you will always have a finished product
+
+web app idea is great but you should solidify & front end is always available in winning projects
+
+simplist way is called Streamlit (streamlit.io) free trial AWS or google compute
+combine datasets to get in
+feature selection - don't throw out other features other than carbs
+
+simple above 180
+input - serial eating curves or avg
+simple model: log reg: currnt sugar level, number of carbs
+is it going to be below or above 180
+take data frame, split, loook at the next 3hr
+train on some people, validate on another set of people
+smooth, gradient boosted trees (XGBoost will probably work) -> baseline model
+
+then want full spectrum or Ok, high, very high -> streamlit app, click burger, click fries
+
+overlay over histroy of other people
+
+sktime is sklearn compatible library specifily for dealing with time series data. works out of the box to cluster time series data
+
+cluster serial response curves and that could be a feature in itself
+
+def use ARIMA to see how well this could work. for baseline model without even serial response curves
+could predict time to peak, or how long until a certain thing happens
+is it gong to be really high or is it going to be a certain number
+
+glycimc index thing with merging data would be a good experience - scrappy with the data
+
+discrete fourier transform -> narrow down and then regress for the parameters
+feature egineering or rescaling often outperforms traditional models 
+
+look through groundwater well depth materials
+Gleb Zhelezov
+1:31 PM
+https://en.wikipedia.org/wiki/Gillespie_algorithm
+Gleb Zhelezov
+2:02 PM
+https://streamlit.io/
+Gleb Zhelezov
+2:17 PM
+https://www.sktime.net/en/stable/
+Gleb Zhelezov
+2:18 PM
+https://www.statsmodels.org/stable/generated/statsmodels.tsa.arima.model.ARIMA.html
