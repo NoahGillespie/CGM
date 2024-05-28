@@ -42,3 +42,50 @@ def max_glucose_dataset(
     grouped_meals.index = range(len(grouped_meals))
 
     return grouped_meals
+
+
+# %%
+def max_glucose_between_meals_dataset(
+    cgm_data: CGMData,
+    participant_num: int,
+    glu_thresh: int = 180,
+    hours_between_meals: int = 2,
+) -> pd.DataFrame:
+    part = cgm_data[participant_num]
+    # get the relevant series from other time periods
+    grouped_meals = part.food.groupby("time_begin")[
+        ["calorie", "total_carb", "dietary_fiber", "sugar", "protein", "total_fat"]
+    ].sum(min_count=1)
+
+    # Exclude meals that are close to other meals
+    grouped_meals["recent_meals"] = (
+        grouped_meals.rolling(
+            window=pd.Timedelta(hours=2 * hours_between_meals),
+            center=True,
+            closed="neither",
+        )
+        .count()
+        .iloc[:, 0]
+    )
+    grouped_meals = grouped_meals[grouped_meals["recent_meals"] == 1]
+    grouped_meals["participant"] = participant_num
+
+    # Get the maximum glucose reading after a meal before the next meal
+    # Idea from: Steven Gubkin
+    grouped_meals["max_glu_post_meal"] = 0
+    for window in grouped_meals[::-1].rolling(window=2):
+        window = window[::-1]
+        start = window.index[0]
+        if len(window) == 2:
+            end = window.index[1]
+        else:
+            end = None
+        grouped_meals.loc[start, "max_glu_post_meal"] = part.glu.loc[start:end].max()[
+            "glucose"
+        ]
+
+    grouped_meals["high_glucose"] = grouped_meals["max_glu_post_meal"] >= glu_thresh
+
+    grouped_meals.index = range(len(grouped_meals))
+
+    return grouped_meals
