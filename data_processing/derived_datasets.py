@@ -72,6 +72,8 @@ def max_glucose_between_meals_dataset(
 
     # Get the maximum glucose reading after a meal before the next meal
     # Idea from: Steven Gubkin
+    grouped_meals["glu_at_first_meal"] = 0
+    grouped_meals["glu_at_next_meal"] = 0
     grouped_meals["max_glu_post_meal"] = 0
     for window in grouped_meals[::-1].rolling(window=2):
         window = window[::-1]
@@ -80,35 +82,10 @@ def max_glucose_between_meals_dataset(
             end = window.index[1]
         else:
             end = None
-        grouped_meals.loc[start, "max_glu_post_meal"] = part.glu.loc[start:end].max()[
-            "glucose"
-        ]
-
-    # Get the glucose reading at the time of the first meal
-    grouped_meals["glu_at_first_meal"] = 0
-    for window in grouped_meals[::-1].rolling(window=2):
-        window = window[::-1]
-        start = window.index[0]
-        if len(window) == 2:
-            end = window.index[1]
-        else:
-            end = None
-        grouped_meals.loc[start, "glu_at_first_meal"] = part.glu.loc[start:end].iloc[0][
-            "glucose"
-        ]
-
-    # Get the glucose reading at the time of the next meal
-    grouped_meals["glu_at_next_meal"] = 0
-    for window in grouped_meals[::-1].rolling(window=2):
-        window = window[::-1]
-        start = window.index[0]
-        if len(window) == 2:
-            end = window.index[1]
-        else:
-            end = None
-        grouped_meals.loc[start, "glu_at_next_meal"] = part.glu.loc[start:end].iloc[-1][
-            "glucose"
-        ]
+        glu_slice = part.glu.loc[start:end]
+        grouped_meals.loc[start, "max_glu_post_meal"] = glu_slice.max()["glucose"]
+        grouped_meals.loc[start, "glu_at_first_meal"] = glu_slice.iloc[0]["glucose"]
+        grouped_meals.loc[start, "glu_at_next_meal"] = glu_slice.iloc[-1]["glucose"]
 
     grouped_meals["high_glucose"] = grouped_meals["max_glu_post_meal"] >= glu_thresh
 
