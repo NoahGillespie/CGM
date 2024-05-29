@@ -93,7 +93,7 @@ def max_glucose_between_meals_dataset(
             end = window.index[1]
         else:
             end = None
-        grouped_meals.loc[start, "glu_at_first_meal"] = part.glu.loc[start:end].max()[
+        grouped_meals.loc[start, "glu_at_first_meal"] = part.glu.loc[start:end].iloc[0][
             "glucose"
         ]
 
@@ -106,7 +106,7 @@ def max_glucose_between_meals_dataset(
             end = window.index[1]
         else:
             end = None
-        grouped_meals.loc[start, "glu_at_next_meal"] = part.glu.loc[start:end].max()[
+        grouped_meals.loc[start, "glu_at_next_meal"] = part.glu.loc[start:end].iloc[-1][
             "glucose"
         ]
 
