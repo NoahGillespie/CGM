@@ -40,3 +40,20 @@ def plot_series_with_food(series, food, time_start, time_end):
     plt.figure(figsize=(20, 4))
     plt.plot(series_slice)
     plt.vlines(food_slice.index, ymin=ymin, ymax=ymax, colors="red")
+
+# Plot the series with food consumption marked
+def plot_series_with_diff(series, food, time_start, time_end):
+    series_slice = series.loc[time_start:time_end, "Glucose Value (mg/dL)"].diff()
+    series_slice_range = series_slice.max() - series_slice.min()
+    series_slice_mid = (series_slice.max() + series_slice.min()) / 2
+    food_slice = food[
+        (time_start <= food.index)
+        & (food.index <= pd.Timestamp(time_end) + pd.Timedelta(days=1))
+    ]
+
+    ymin = series_slice_mid - series_slice_range * 0.6
+    ymax = series_slice_mid + series_slice_range * 0.6
+
+    plt.figure(figsize=(20, 4))
+    plt.plot(series_slice)
+    plt.vlines(food_slice.index, ymin=ymin, ymax=ymax, colors="red")
