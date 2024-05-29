@@ -76,6 +76,7 @@ class Patient:
                 index_col=["Timestamp (YYYY-MM-DDThh:mm:ss)"],
                 parse_dates=["Timestamp (YYYY-MM-DDThh:mm:ss)"],
             )
+            self._glu = self._glu[self._glu["Event Type"] == "EGV"]
             self._glu = self._glu.rename(columns={"Glucose Value (mg/dL)": "glucose"})
             self._glu = self._glu.rename_axis("datetime")
             self._glu = self._glu[["glucose"]]
