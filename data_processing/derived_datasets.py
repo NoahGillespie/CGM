@@ -84,6 +84,32 @@ def max_glucose_between_meals_dataset(
             "glucose"
         ]
 
+    # Get the glucose reading at the time of the first meal
+    grouped_meals["glu_at_first_meal"] = 0
+    for window in grouped_meals[::-1].rolling(window=2):
+        window = window[::-1]
+        start = window.index[0]
+        if len(window) == 2:
+            end = window.index[1]
+        else:
+            end = None
+        grouped_meals.loc[start, "glu_at_first_meal"] = part.glu.loc[start:end].max()[
+            "glucose"
+        ]
+
+    # Get the glucose reading at the time of the next meal
+    grouped_meals["glu_at_next_meal"] = 0
+    for window in grouped_meals[::-1].rolling(window=2):
+        window = window[::-1]
+        start = window.index[0]
+        if len(window) == 2:
+            end = window.index[1]
+        else:
+            end = None
+        grouped_meals.loc[start, "glu_at_next_meal"] = part.glu.loc[start:end].max()[
+            "glucose"
+        ]
+
     grouped_meals["high_glucose"] = grouped_meals["max_glu_post_meal"] >= glu_thresh
 
     grouped_meals.index = range(len(grouped_meals))
