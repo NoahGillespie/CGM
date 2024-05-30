@@ -35,11 +35,14 @@ def max_glucose_dataset(
     grouped_meals = grouped_meals[grouped_meals["recent_meals"] == 1]
     grouped_meals["participant"] = participant_num
 
-    grouped_meals["max_glucose"] = 0
+    grouped_meals["max_glucose"] = np.nan
+    grouped_meals["start_glucose"] = np.nan
+    grouped_meals["diff_glucose"] = np.nan
     for start in grouped_meals.index:
-        grouped_meals.loc[start, "max_glucose"] = get_meal_spike(
-            part.glu, start, hours_after_meal
-        ).max()
+        glu_curve = get_meal_spike(part.glu, start, hours_after_meal)
+        grouped_meals.loc[start, "max_glucose"] = glu_curve.max()
+        grouped_meals.loc[start, "start_glucose"] = glu_curve.iloc[0]
+        grouped_meals.loc[start, "diff_glucose"] = glu_curve.max() - glu_curve.iloc[0]
 
     grouped_meals["high_glucose"] = grouped_meals["max_glucose"] >= glu_thresh
 
@@ -75,9 +78,10 @@ def max_glucose_between_meals_dataset(
 
     # Get the maximum glucose reading after a meal before the next meal
     # Idea from: Steven Gubkin
-    grouped_meals["glu_at_first_meal"] = 0
-    grouped_meals["glu_at_next_meal"] = 0
-    grouped_meals["max_glu_post_meal"] = 0
+    grouped_meals["glu_at_first_meal"] = np.nan
+    grouped_meals["glu_at_next_meal"] = np.nan
+    grouped_meals["max_glu_post_meal"] = np.nan
+    grouped_meals["diff_glucose"] = np.nan
     for window in grouped_meals[::-1].rolling(window=2):
         window = window[::-1]
         start = window.index[0]
@@ -86,9 +90,14 @@ def max_glucose_between_meals_dataset(
         else:
             end = None
         glu_slice = part.glu.loc[start:end]
+        if len(glu_slice) == 0:
+            continue
         grouped_meals.loc[start, "max_glu_post_meal"] = glu_slice.max()["glucose"]
         grouped_meals.loc[start, "glu_at_first_meal"] = glu_slice.iloc[0]["glucose"]
         grouped_meals.loc[start, "glu_at_next_meal"] = glu_slice.iloc[-1]["glucose"]
+        grouped_meals.loc[start, "diff_glucose"] = (
+            glu_slice.max()["glucose"] - glu_slice.iloc[0]["glucose"]
+        )
 
     grouped_meals["high_glucose"] = grouped_meals["max_glu_post_meal"] >= glu_thresh
 
@@ -125,7 +134,6 @@ def align_series(cgm_data: CGMData, participant_num: int):
     )
 
     glu = part.glu.copy()
-    # TODO align the high frequency time series to glucose without resampling glu
     glu = concat_time_series(glu, part.hr, "hr")
     glu = concat_time_series(glu, part.eda, "eda")
     glu = concat_time_series(glu, part.temp, "temp")
