@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from scipy.signal import butter, filtfilt
@@ -10,6 +11,8 @@ from data_processing.constants import ACC_HZ
 def get_meal_spike(glu: pd.DataFrame, time, duration: int):
     # get a slice of glu for duration hours after time
     glu_slice = glu.loc[time : time + pd.Timedelta(hours=duration), "glucose"]
+    if len(glu_slice) == 0:
+        return pd.Series(np.nan)
     glu_slice.index = glu_slice.index - glu_slice.index[0]
     # sometimes the measurements are off by a second
     glu_slice.index = glu_slice.index.round(freq="5min")

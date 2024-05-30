@@ -48,7 +48,6 @@ def max_glucose_dataset(
     return grouped_meals
 
 
-# %%
 def max_glucose_between_meals_dataset(
     cgm_data: CGMData,
     participant_num: int,

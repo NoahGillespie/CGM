@@ -1,4 +1,5 @@
 from typing import Dict
+import numpy as np
 import pandas as pd
 
 from data_processing.constants import ACC_G_MODE, SMALL_G
@@ -118,6 +119,8 @@ class Patient:
                 self._food["time_begin"] = pd.to_datetime(self._food["time_begin"])
                 self._food["time_end"] = None
                 self._food = self._food.set_index("time_begin")
+                self._food["total_fat"] = np.nan
+                self._food["dietary_fiber"] = np.nan
             else:
                 self._food = pd.read_csv(
                     self.get_file_path("food"),
