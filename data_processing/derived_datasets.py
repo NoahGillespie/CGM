@@ -109,8 +109,8 @@ def max_glucose_between_meals_dataset(
 # Aggregate a time series and add it to an existing dataframe
 def concat_time_series(df: pd.DataFrame, series, col_name: str, agg_func="mean"):
     df_copy = df.copy()
-    time_min = pd.Timestamp.min.to_datetime64()
-    time_max = pd.Timestamp.max.to_datetime64()
+    time_min = (df.index.values.min() - pd.Timedelta(minutes=5)).to_datetime64()
+    time_max = (df.index.values.max() + pd.Timedelta(minutes=5)).to_datetime64()
     cuts = np.concatenate([[time_min], df.index.values, [time_max]])
     series_copy = series.copy()
     series_copy["time_group"] = pd.cut(series.index.values, cuts)
@@ -118,6 +118,35 @@ def concat_time_series(df: pd.DataFrame, series, col_name: str, agg_func="mean")
         series_copy.groupby(["time_group"], observed=False).agg(agg_func).iloc[:-1]
     )
     return df_copy
+
+
+def concat_food(df: pd.DataFrame, food):
+    df = df.copy()
+    food = food.copy()
+
+    time_min = (df.index.values.min() - pd.Timedelta(minutes=5)).to_datetime64()
+    time_max = (df.index.values.max() + pd.Timedelta(minutes=5)).to_datetime64()
+    cuts = np.concatenate([[time_min], df.index.values, [time_max]])
+    food["time_group"] = pd.cut(food.index.values, cuts)
+    grouped_food = (
+        food[
+            [
+                "calorie",
+                "total_carb",
+                "dietary_fiber",
+                "sugar",
+                "protein",
+                "total_fat",
+                "time_group",
+            ]
+        ]
+        .groupby(["time_group"], observed=False)
+        .sum()
+        .iloc[:-1]
+    )
+    grouped_food.index = df.index
+    new_df = pd.concat([df, grouped_food], axis=1)
+    return new_df
 
 
 def align_series(cgm_data: CGMData, participant_num: int):
@@ -138,10 +167,10 @@ def align_series(cgm_data: CGMData, participant_num: int):
     glu = concat_time_series(glu, part.eda, "eda")
     glu = concat_time_series(glu, part.temp, "temp")
     glu = concat_time_series(glu, acc_tot, "acc")
+    glu = concat_food(glu, part.food)
 
     glu.index = glu.index - glu.index[0]
     glu.index = glu.index.round("5min")
     # TODO: Interpolate
-    # TODO: Add Food
 
     return glu
