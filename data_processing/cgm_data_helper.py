@@ -1,5 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+from scipy.signal import butter, filtfilt
+from data_processing.constants import ACC_HZ
 
 ## Data Manipulation
 
@@ -19,6 +21,15 @@ def find_standard_meal(df: pd.DataFrame):
         "searched_food"
     ].str.contains("Frosted Flakes")
     return df[bfast_filter]
+
+
+def acc_high_pass(acc, cutoff_freq, time_start, time_end):
+    acc_slice = acc.loc[time_start:time_end]
+    res = acc_slice.copy()
+    b, a = butter(4, 2 * cutoff_freq / ACC_HZ, btype="high")
+    for col in res:
+        res[col] = filtfilt(b, a, acc_slice[col])
+    return res
 
 
 ## Plotting

@@ -2,7 +2,11 @@ import pandas as pd
 import numpy as np
 
 from data_processing.cgm_data import CGMData
-from data_processing.cgm_data_helper import find_standard_meal, get_meal_spike
+from data_processing.cgm_data_helper import (
+    acc_high_pass,
+    find_standard_meal,
+    get_meal_spike,
+)
 
 
 # Blood sugar after meal should be <180
@@ -92,3 +96,45 @@ def max_glucose_between_meals_dataset(
     grouped_meals.index = range(len(grouped_meals))
 
     return grouped_meals
+
+
+# Aggregate a time series and add it to an existing dataframe
+def concat_time_series(df: pd.DataFrame, series, col_name: str, agg_func="mean"):
+    df_copy = df.copy()
+    time_min = pd.Timestamp.min.to_datetime64()
+    time_max = pd.Timestamp.max.to_datetime64()
+    cuts = np.concatenate([[time_min], df.index.values, [time_max]])
+    series_copy = series.copy()
+    series_copy["time_group"] = pd.cut(series.index.values, cuts)
+    df_copy[col_name] = (
+        series_copy.groupby(["time_group"], observed=False).agg(agg_func).iloc[:-1]
+    )
+    return df_copy
+
+
+def align_series(cgm_data: CGMData, participant_num: int):
+    part = cgm_data[participant_num]
+
+    # Remove acc gravity
+    acc_filt = acc_high_pass(part.acc, 0.5, None, None)
+    acc_tot = pd.DataFrame(
+        {
+            "acc": np.sqrt(
+                acc_filt["acc_x"] ** 2 + acc_filt["acc_y"] ** 2 + acc_filt["acc_z"] ** 2
+            )
+        }
+    )
+
+    glu = part.glu.copy()
+    # TODO align the high frequency time series to glucose without resampling glu
+    glu = concat_time_series(glu, part.hr, "hr")
+    glu = concat_time_series(glu, part.eda, "eda")
+    glu = concat_time_series(glu, part.temp, "temp")
+    glu = concat_time_series(glu, acc_tot, "acc")
+
+    glu.index = glu.index - glu.index[0]
+    glu.index = glu.index.round("5min")
+    # TODO: Interpolate
+    # TODO: Add Food
+
+    return glu
