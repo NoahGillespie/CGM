@@ -60,11 +60,27 @@ def max_glucose_dataset(
     grouped_meals["max_glucose"] = np.nan
     grouped_meals["start_glucose"] = np.nan
     grouped_meals["diff_glucose"] = np.nan
+    grouped_meals["mean_temp"] = np.nan
+    grouped_meals["mean_hr"] = np.nan
+    grouped_meals["mean_acc"] = np.nan
+    grouped_meals["mean_eda"] = np.nan
+    series_dict = {
+        "temp": part.temp,
+        "hr": part.hr,
+        "acc": part.acc_tot,
+        "eda": part.eda,
+    }
     for start in grouped_meals.index:
         glu_curve = get_meal_spike(part.glu, start, hours_after_meal)
         grouped_meals.loc[start, "max_glucose"] = glu_curve.max()
         grouped_meals.loc[start, "start_glucose"] = glu_curve.iloc[0]
         grouped_meals.loc[start, "diff_glucose"] = glu_curve.max() - glu_curve.iloc[0]
+
+        end = start + pd.Timedelta(hours=2)
+        for key, series in series_dict.items():
+            metric_slice = series[start:end]
+            if len(metric_slice) > 0:
+                grouped_meals.loc[start, f"mean_{key}"] = metric_slice.values.mean()
 
     grouped_meals["high_glucose"] = grouped_meals["max_glucose"] >= glu_thresh
 
@@ -127,6 +143,16 @@ def max_glucose_between_meals_dataset(
     grouped_meals["glu_at_next_meal"] = np.nan
     grouped_meals["max_glu_post_meal"] = np.nan
     grouped_meals["diff_glucose"] = np.nan
+    grouped_meals["mean_temp"] = np.nan
+    grouped_meals["mean_hr"] = np.nan
+    grouped_meals["mean_acc"] = np.nan
+    grouped_meals["mean_eda"] = np.nan
+    series_dict = {
+        "temp": part.temp,
+        "hr": part.hr,
+        "acc": part.acc_tot,
+        "eda": part.eda,
+    }
     for window in grouped_meals[::-1].rolling(window=2):
         window = window[::-1]
         start = window.index[0]
@@ -143,6 +169,12 @@ def max_glucose_between_meals_dataset(
         grouped_meals.loc[start, "diff_glucose"] = (
             glu_slice.max()["glucose"] - glu_slice.iloc[0]["glucose"]
         )
+
+        metric_end = start + pd.Timedelta(hours=2)
+        for key, series in series_dict.items():
+            metric_slice = series[start:metric_end]
+            if len(metric_slice) > 0:
+                grouped_meals.loc[start, f"mean_{key}"] = metric_slice.values.mean()
 
     grouped_meals["high_glucose"] = grouped_meals["max_glu_post_meal"] >= glu_thresh
 
@@ -214,20 +246,20 @@ def align_series(cgm_data: CGMData, participant_num: int):
     part = cgm_data[participant_num]
 
     # Remove acc gravity
-    acc_filt = acc_high_pass(part.acc, 0.5, None, None)
-    acc_tot = pd.DataFrame(
-        {
-            "acc": np.sqrt(
-                acc_filt["acc_x"] ** 2 + acc_filt["acc_y"] ** 2 + acc_filt["acc_z"] ** 2
-            )
-        }
-    )
+    # acc_filt = acc_high_pass(part.acc, 0.5, None, None)
+    # acc_tot = pd.DataFrame(
+    #     {
+    #         "acc": np.sqrt(
+    #             acc_filt["acc_x"] ** 2 + acc_filt["acc_y"] ** 2 + acc_filt["acc_z"] ** 2
+    #         )
+    #     }
+    # )
 
     glu = part.glu.copy()
     glu = concat_time_series(glu, part.hr, "hr")
     glu = concat_time_series(glu, part.eda, "eda")
     glu = concat_time_series(glu, part.temp, "temp")
-    glu = concat_time_series(glu, acc_tot, "acc")
+    glu = concat_time_series(glu, part.acc_tot, "acc")
     glu = concat_food(glu, part.food)
 
     glu.index = glu.index - glu.index[0]

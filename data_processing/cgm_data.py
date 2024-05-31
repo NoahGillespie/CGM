@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 
 from data_processing.constants import ACC_G_MODE, SMALL_G
+from data_processing.cgm_data_helper import acc_high_pass
 
 DATA_PATH = "data"
 
@@ -26,6 +27,7 @@ class Patient:
         self.hba1c: float = hba1c
 
         self._acc: pd.DataFrame = None
+        self._acc_tot: pd.DataFrame = None
         self._bvp: pd.DataFrame = None
         self._glu: pd.DataFrame = None
         self._eda: pd.DataFrame = None
@@ -57,6 +59,21 @@ class Patient:
             self._acc["acc_y"] = (self._acc["acc_y"] * ACC_G_MODE * SMALL_G) / 127
             self._acc["acc_z"] = (self._acc["acc_z"] * ACC_G_MODE * SMALL_G) / 127
         return self._acc
+
+    @property
+    def acc_tot(self):
+        if self._acc_tot is None:
+            acc_filt = acc_high_pass(self.acc, 0.5, None, None)
+            self._acc_tot = pd.DataFrame(
+                {
+                    "acc": np.sqrt(
+                        acc_filt["acc_x"] ** 2
+                        + acc_filt["acc_y"] ** 2
+                        + acc_filt["acc_z"] ** 2
+                    )
+                }
+            )
+        return self._acc_tot
 
     @property
     def bvp(self):
