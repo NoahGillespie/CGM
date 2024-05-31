@@ -20,7 +20,7 @@ BIG IDEAs Lab Glycemic Variability and Wearable Device Data: <a href="https://ph
 
 # Stakeholders
 * Patients and individuals who monitor their blood glucose levels
-* Health tech ompanies involved with CGMs
+* Health tech companies involved with CGMs
 * Healthcare providers
 
 
