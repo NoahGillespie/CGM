@@ -38,6 +38,9 @@ class Patient:
         metric_name = Patient.metric_map[metric]
         return f"./{DATA_PATH}/{self.patient_id:03d}/{metric_name}_{self.patient_id:03d}.csv"
 
+    def get_gi_path(self):
+        return f"./data_processing/Glycemic_Index/GI_{self.patient_id:d}.csv"
+
     @property
     def acc(self):
         if self._acc is None:
@@ -95,65 +98,74 @@ class Patient:
             self._eda.columns = [c.strip() for c in self._eda.columns]
         return self._eda
 
+    def _load_food(self):
+        food_path = self.get_file_path("food")
+        gi_path = self.get_gi_path()
+
+        gi_df = pd.read_csv(
+            gi_path, index_col=["time_begin"], parse_dates=["time_begin"]
+        )
+
+        if self.patient_id == 3:
+            # Patient 3 has no header
+            self._food = pd.read_csv(food_path, skipinitialspace=True)
+            self._food.columns = [
+                "date",
+                "time",
+                "time_begin",
+                "logged_food",
+                "amount",
+                "unit",
+                "searched_food",
+                "calorie",
+                "total_carb",
+                "sugar",
+                "protein",
+            ]
+            self._food["time_begin"] = pd.to_datetime(self._food["time_begin"])
+            self._food["time_end"] = None
+            self._food = self._food.set_index("time_begin")
+            self._food["total_fat"] = np.nan
+            self._food["dietary_fiber"] = np.nan
+        else:
+            self._food = pd.read_csv(
+                food_path,
+                index_col=["time_begin"],
+                parse_dates=["time_begin"],
+                skipinitialspace=True,
+            )
+
+        self._food["time_end"] = pd.to_datetime(
+            self._food["date"] + " " + self._food["time_end"]
+        )
+
+        end_times = self._food.groupby("time_begin")["time_end"].min()
+        self._food = self._food.merge(
+            end_times,
+            how="left",
+            on="time_begin",
+            suffixes=("", "_x"),
+            validate="many_to_one",
+        )
+        self._food["time_end"] = self._food["time_end"].fillna(self._food["time_end_x"])
+        self._food = self._food.drop("time_end_x", axis=1)
+
+        # Fill in NaN in searched food with empty string
+        self._food["searched_food"] = self._food["searched_food"].fillna("")
+
+        # Some food logs have `time_of_day` instead of `time`
+        if self.patient_id in [7, 13, 15, 16]:
+            self._food = self._food.drop(["date", "time_of_day"], axis=1)
+        else:
+            self._food = self._food.drop(["date", "time"], axis=1)
+
+        self._food["gi"] = gi_df["GI"]
+        self._food["gl"] = self._food["total_carb"] * self._food["gi"] * 0.01
+
     @property
     def food(self):
         if self._food is None:
-            if self.patient_id == 3:
-                # Patient 3 has no header
-                self._food = pd.read_csv(
-                    self.get_file_path("food"), skipinitialspace=True
-                )
-                self._food.columns = [
-                    "date",
-                    "time",
-                    "time_begin",
-                    "logged_food",
-                    "amount",
-                    "unit",
-                    "searched_food",
-                    "calorie",
-                    "total_carb",
-                    "sugar",
-                    "protein",
-                ]
-                self._food["time_begin"] = pd.to_datetime(self._food["time_begin"])
-                self._food["time_end"] = None
-                self._food = self._food.set_index("time_begin")
-                self._food["total_fat"] = np.nan
-                self._food["dietary_fiber"] = np.nan
-            else:
-                self._food = pd.read_csv(
-                    self.get_file_path("food"),
-                    index_col=["time_begin"],
-                    parse_dates=["time_begin"],
-                    skipinitialspace=True,
-                )
-
-            self._food["time_end"] = pd.to_datetime(
-                self._food["date"] + " " + self._food["time_end"]
-            )
-
-            end_times = self._food.groupby("time_begin")["time_end"].min()
-            self._food = self._food.merge(
-                end_times,
-                how="left",
-                on="time_begin",
-                suffixes=("", "_x"),
-                validate="many_to_one",
-            )
-            self._food["time_end"] = self._food["time_end"].fillna(
-                self._food["time_end_x"]
-            )
-            self._food = self._food.drop("time_end_x", axis=1)
-
-            # Fill in NaN in searched food with empty string
-            self._food["searched_food"] = self._food["searched_food"].fillna("")
-
-            # Some food logs have `time_of_day` instead of `time`
-            if self.patient_id in [7, 13, 15, 16]:
-                self._food = self._food.drop(["date", "time_of_day"], axis=1)
-            else:
-                self._food = self._food.drop(["date", "time"], axis=1)
+            self._load_food()
         return self._food
 
     @property

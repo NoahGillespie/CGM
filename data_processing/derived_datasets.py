@@ -19,9 +19,31 @@ def max_glucose_dataset(
 ) -> pd.DataFrame:
     part = cgm_data[participant_num]
     # get the relevant series from other time periods
-    grouped_meals = part.food.groupby("time_begin")[
-        ["calorie", "total_carb", "dietary_fiber", "sugar", "protein", "total_fat"]
-    ].sum(min_count=1)
+    food_measure_cols = [
+        "calorie",
+        "total_carb",
+        "dietary_fiber",
+        "sugar",
+        "protein",
+        "total_fat",
+        "gi",
+        "gl",
+    ]
+
+    agg_dict = {
+        "calorie": "sum",
+        "total_carb": "sum",
+        "dietary_fiber": "sum",
+        "sugar": "sum",
+        "protein": "sum",
+        "total_fat": "sum",
+        "gi": "mean",
+        "gl": "sum",
+    }
+
+    grouped_meals = part.food.groupby("time_begin")[food_measure_cols].agg(
+        agg_dict, min_count=1
+    )
     # Exclude meals that are close to other meals
     grouped_meals["recent_meals"] = (
         grouped_meals.rolling(
@@ -58,10 +80,33 @@ def max_glucose_between_meals_dataset(
     hours_between_meals: int = 2,
 ) -> pd.DataFrame:
     part = cgm_data[participant_num]
-    # get the relevant series from other time periods
-    grouped_meals = part.food.groupby("time_begin")[
-        ["calorie", "total_carb", "dietary_fiber", "sugar", "protein", "total_fat"]
-    ].sum(min_count=1)
+
+    food_measure_cols = [
+        "calorie",
+        "total_carb",
+        "dietary_fiber",
+        "sugar",
+        "protein",
+        "total_fat",
+        "gi",
+        "gl",
+    ]
+
+    agg_dict = {
+        "calorie": "sum",
+        "total_carb": "sum",
+        "dietary_fiber": "sum",
+        "sugar": "sum",
+        "protein": "sum",
+        "total_fat": "sum",
+        "gi": "mean",
+        "gl": "sum",
+    }
+
+    # Get the relevant series from other time periods
+    grouped_meals = part.food.groupby("time_begin")[food_measure_cols].agg(
+        agg_dict, min_count=1
+    )
 
     # Exclude meals that are close to other meals
     grouped_meals["recent_meals"] = (
@@ -128,23 +173,39 @@ def concat_food(df: pd.DataFrame, food):
     time_max = (df.index.values.max() + pd.Timedelta(minutes=5)).to_datetime64()
     cuts = np.concatenate([[time_min], df.index.values, [time_max]])
     food["time_group"] = pd.cut(food.index.values, cuts)
+
+    food_measure_cols = [
+        "calorie",
+        "total_carb",
+        "dietary_fiber",
+        "sugar",
+        "protein",
+        "total_fat",
+        "gi",
+        "gl",
+        "time_group",
+    ]
+
+    agg_dict = {
+        "calorie": "sum",
+        "total_carb": "sum",
+        "dietary_fiber": "sum",
+        "sugar": "sum",
+        "protein": "sum",
+        "total_fat": "sum",
+        "gi": "mean",
+        "gl": "sum",
+    }
+
     grouped_food = (
-        food[
-            [
-                "calorie",
-                "total_carb",
-                "dietary_fiber",
-                "sugar",
-                "protein",
-                "total_fat",
-                "time_group",
-            ]
-        ]
+        food[food_measure_cols]
         .groupby(["time_group"], observed=False)
-        .sum()
+        .agg(agg_dict)
         .iloc[:-1]
     )
     grouped_food.index = df.index
+    grouped_food.loc[grouped_food["gi"].isnull(), "gi"] = 0
+
     new_df = pd.concat([df, grouped_food], axis=1)
     return new_df
 
