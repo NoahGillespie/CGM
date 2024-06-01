@@ -242,18 +242,8 @@ def concat_food(df: pd.DataFrame, food):
     return new_df
 
 
-def align_series(cgm_data: CGMData, participant_num: int):
+def align_series(cgm_data: CGMData, participant_num: int, zero_start=False):
     part = cgm_data[participant_num]
-
-    # Remove acc gravity
-    # acc_filt = acc_high_pass(part.acc, 0.5, None, None)
-    # acc_tot = pd.DataFrame(
-    #     {
-    #         "acc": np.sqrt(
-    #             acc_filt["acc_x"] ** 2 + acc_filt["acc_y"] ** 2 + acc_filt["acc_z"] ** 2
-    #         )
-    #     }
-    # )
 
     glu = part.glu.copy()
     glu = concat_time_series(glu, part.hr, "hr")
@@ -262,7 +252,8 @@ def align_series(cgm_data: CGMData, participant_num: int):
     glu = concat_time_series(glu, part.acc_tot, "acc")
     glu = concat_food(glu, part.food)
 
-    glu.index = glu.index - glu.index[0]
+    if zero_start:
+        glu.index = glu.index - glu.index[0]
     glu.index = glu.index.round("5min")
     # TODO: Interpolate
 
