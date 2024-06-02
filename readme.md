@@ -1,7 +1,7 @@
 # Predicting Glucose Levels on a Continuous Glucose Monitor
 
 #### Team members
-Adria Delhom, Noah Gillespie, Margaret Swerdloff, Oladimeji Olaluwoye, S. C. Park, Daniel Visscher
+Noah Gillespie, Margaret Swerdloff, Oladimeji Olaluwoye, S. C. Park, Daniel Visscher
 
 
 # Project Description
@@ -22,6 +22,3 @@ BIG IDEAs Lab Glycemic Variability and Wearable Device Data: <a href="https://ph
 * Patients and individuals who monitor their blood glucose levels
 * Health tech companies involved with CGMs
 * Healthcare providers
-
-
-# Key Performance Indicators
