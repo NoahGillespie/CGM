@@ -1,10 +1,10 @@
 # Predicting Glucose Levels on a Continuous Glucose Monitor
 
 ## Team members
-[Noah Gillespie](https://github.com/NoahGillespie)
-[Margaret Swerdloff](https://github.com/mswerdloffNU)
-[Oladimeji Olaluwoye](https://github.com/oladimeji360)
-[S. C. Park](https://github.com/scparkmaths)
+[Noah Gillespie](https://github.com/NoahGillespie)  
+[Margaret Swerdloff](https://github.com/mswerdloffNU)   
+[Oladimeji Olaluwoye](https://github.com/oladimeji360)  
+[S. C. Park](https://github.com/scparkmaths)    
 [Daniel Visscher](https://github.com/danielvisscher)
 
 
