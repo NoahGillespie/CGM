@@ -1,5 +1,11 @@
 # Predicting Glucose Levels on a Continuous Glucose Monitor
 
+An [Erdős Institute Data Science Bootcamp](https://www.erdosinstitute.org/programs/may-summer-2024/data-science-boot-camp) project
+
+Awarded 1st place out of 51 projects
+
+[5-minute recorded presentation]()
+
 ## Team members
 [Noah Gillespie](https://github.com/NoahGillespie)  
 [Margaret Swerdloff](https://github.com/mswerdloffNU)   
