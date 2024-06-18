@@ -156,6 +156,7 @@ class Patient:
             self._food["date"] + " " + self._food["time_end"]
         )
 
+
         end_times = self._food.groupby("time_begin")["time_end"].min()
         self._food = self._food.merge(
             end_times,
@@ -178,6 +179,11 @@ class Patient:
 
         self._food["gi"] = gi_df["GI"]
         self._food["gl"] = self._food["total_carb"] * self._food["gi"] * 0.01
+
+        # Fix patient 7 and 13 timestamps
+        if self.patient_id == 7 or self.patient_id == 13:
+            self._food.index = self._food.index + pd.Timedelta(days=150)
+            self._food['time_end'] = self._food['time_end'] + pd.Timedelta(days=150)
 
     @property
     def food(self):
