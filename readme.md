@@ -1,10 +1,10 @@
 # Predicting Glucose Levels on a Continuous Glucose Monitor
 
-An [Erdős Institute Data Science Bootcamp](https://www.erdosinstitute.org/programs/may-summer-2024/data-science-boot-camp) project
+An [Erdős Institute](https://www.erdosinstitute.org) [Data Science Bootcamp](https://www.erdosinstitute.org/programs/may-summer-2024/data-science-boot-camp) project
 
-Awarded 1st place out of 51 projects
+Awarded 1st place out of 51 projects!
 
-[5-minute recorded presentation]()
+Watch our [5-minute recorded presentation](https://video.wixstatic.com/video/b111ac_995a7f902a364fb18ebd4ee2a20d17d5/1080p/mp4/file.mp4)
 
 ## Team members
 [Noah Gillespie](https://github.com/NoahGillespie)  
@@ -15,14 +15,19 @@ Awarded 1st place out of 51 projects
 
 
 ## Project Description
-Diabetes is health condition in which the body does not appropriately manage blood glucose levels. According to the <a href="https://www.cdc.gov/diabetes/php/data-research/index.html">CDC</a>, 38.4 million people in the U.S. have diabetes (11.6% of the U.S. population), and 97.6 million people aged 18 years or older have prediabetes (38.0% of the adult U.S. population).
+Diabetes is health condition in which the body does not appropriately manage blood glucose levels. <a href="https://www.cdc.gov/diabetes/php/data-research/index.html">According to the CDC</a>, 38.4 million people in the U.S. have diabetes (11.6% of the U.S. population), and 97.6 million people aged 18 years or older have prediabetes (38.0% of the adult U.S. population).
 
-A Continuous Glucose Monitor (CGM) is a wearable medical device that records interstitial glucose every 5 minutes. Interstitial glucose is a good but not perfect substitute for blood glucose, but while blood glucose is measured by a more invasive finger poke and hence collected only a handful of times per day, a CGM can collect 12*24 = 288 data points per day. This provides a great opportunity to use data science techniques to learn about issues related to diabetes and diabetes management.
+Meanwhile, wearable devices that collect medical data are [increasingly common](https://emedcert.com/blog/wearables-statistics-future-of-healthcare) in the US, with a 2019 survey showing more than half of Americans own one. These devices have the potential to [transform healthcare](https://postgraduateeducation.hms.harvard.edu/trends-medicine/exploring-promise-wearable-devices-further-medical-research) through real-time data collection of a person’s health status during their everyday activities.
 
-This project works with a dataset containing CGM data for 16 patients over about 10 days, along with a food intake log and other physical data (heart rate, skin temperature, accelerometry...). Our goal is to produce a model for one component of glucose variability: spikes in glucose levels after eating. 
+The goal of this project is to use data from two wearable medical devices (a Continuous Glucose Monitor (CGM) and a smartwatch) along with patient logged food intake to better model blood glucose levels in prediabetics.
 
 ## Dataset
-BIG IDEAs Lab Glycemic Variability and Wearable Device Data: <a href="https://physionet.org/content/big-ideas-glycemic-wearable/1.1.2/">https://physionet.org/content/big-ideas-glycemic-wearable/1.1.2/</a>
+The dataset comes from BIG IDEAs Lab Glycemic Variability and Wearable Device Data: <a href="https://physionet.org/content/big-ideas-glycemic-wearable/1.1.2/">https://physionet.org/content/big-ideas-glycemic-wearable/1.1.2/</a>
 
-* There were 16 study participants with 10 days of data for each.
-* Data collected: tri-axial accelerometry, blood volume pulse, interstitial glucose concentration, EDA, HR, IBI, skin temperature, and Food Log.
+> Study participants (n = 16) with elevated blood glucose in the normal range were monitored with the Dexcom G6 continuous glucose monitors and Empatica E4 wrist-worn wearable devices for 8-10 days.
+>
+> The Dexcom G6 measures interstitial glucose concentration (mg/dL) every 5 min and the Empatica E4 measures photoplethysmography, electrodermal activity (EDA), skin temperature (TEMP), and tri-axial accelerometry (ACC), resulting in a total of 7 features. PPG was sampled at 64 Hz, providing heart rate (HR) values every second along with a blood volume pulse (BVP) signal from which interbeat interval (IBI) data was computed. EDA and skin temperature were sampled at 4 Hz and accelerometry was sampled at 32 Hz.
+
+The dataset consists of 16 folders, each with eight csv files: the seven features collected by wearable devices (ACC, BVP, Dexcom, EDA, HR, IBI, TEMP) along with a patient documented food log.
+
+***Note:*** The data is not included in this repository due to its size (34.1 GB). To run scripts in this repository, download the data via the link above into a folder "data" inside your copy of the repository.
